@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator PIE 3 Himpunan Fleksibel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles for aesthetics */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+        }
+        .card {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .input-style {
+            transition: all 0.2s;
+            border-radius: 0.5rem;
+        }
+        .unknown-input {
+            background-color: #fffbeb !important;
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
+        }
+        .text-formula {
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="container mx-auto max-w-4xl">
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">Kalkulator PIE Fleksibel (3 Himpunan)</h1>
+        
+        <div id="messageArea" class="hidden p-3 rounded-lg mb-4 font-medium" role="alert"></div>
+
+        <div class="card bg-white p-6 rounded-xl mb-6">
+            <div class="p-4 mb-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                <p class="font-semibold text-blue-800">📌 Petunjuk Penggunaan:</p>
+                <ul class="list-disc list-inside text-sm text-blue-700 mt-1">
+                    <li>Masukkan **-1** pada **tepat satu** variabel yang ingin dicari nilainya.</li>
+                    <li>Isi nilai positif untuk variabel lain yang diketahui.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Data Input</h3>
+            
+            <div class="mb-4">
+                <label for="totalPopulasi" class="block text-sm font-medium text-gray-700">Total Populasi (U):</label>
+                <input type="number" id="totalPopulasi" value="150" min="0" class="input-style mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <h4 class="text-lg font-medium text-gray-700 mt-6 mb-2">Himpunan Tunggal</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="space-y-1">
+                    <label for="a" class="block text-sm font-medium text-gray-700">|A|:</label>
+                    <input type="number" id="a" value="55" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+                <div class="space-y-1">
+                    <label for="b" class="block text-sm font-medium text-gray-700">|B|:</label>
+                    <input type="number" id="b" value="80" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+                <div class="space-y-1">
+                    <label for="c" class="block text-sm font-medium text-gray-700">|C|:</label>
+                    <input type="number" id="c" value="60" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+            </div>
+
+            <h4 class="text-lg font-medium text-gray-700 mt-6 mb-2">Irisan Ganda</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="space-y-1">
+                    <label for="ab" class="block text-sm font-medium text-gray-700">|A ∩ B|:</label>
+                    <input type="number" id="ab" value="35" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+                <div class="space-y-1">
+                    <label for="ac" class="block text-sm font-medium text-gray-700">|A ∩ C|:</label>
+                    <input type="number" id="ac" value="30" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+                <div class="space-y-1">
+                    <label for="bc" class="block text-sm font-medium text-gray-700">|B ∩ C|:</label>
+                    <input type="number" id="bc" value="25" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+            </div>
+
+            <h4 class="text-lg font-medium text-gray-700 mt-6 mb-2">Irisan Tiga dan Union</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="space-y-1">
+                    <label for="abc" class="block text-sm font-medium text-gray-700">|A ∩ B ∩ C|:</label>
+                    <input type="number" id="abc" value="10" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300">
+                </div>
+                <div class="space-y-1">
+                    <label for="unionSize" class="block text-sm font-medium text-gray-700">|A ∪ B ∪ C|:</label>
+                    <input type="number" id="unionSize" value="-1" min="-1" oninput="updateInputStyles()" class="input-style block w-full px-3 py-2 border border-gray-300 unknown-input">
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                <button onclick="hitungPIE()" class="flex-1 px-4 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">Hitung Hasil</button>
+                <button onclick="resetForm()" class="flex-1 px-4 py-3 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600 transition duration-150 shadow-md">Reset ke Default</button>
+            </div>
+        </div>
+
+        <div id="outputResult" class="card bg-white p-6 rounded-xl result-box border-l-4 border-green-500" style="display: none;">
+            <h3 class="text-2xl font-bold text-green-600 mb-4">Hasil Perhitungan PIE</h3>
+            <div id="resultContent"></div>
+        </div>
+        
+        <div class="card bg-white p-6 rounded-xl mt-6">
+            <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Contoh Kasus Cepat</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="contohKasus(1)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-150 text-sm">Contoh 1: Cari |A ∪ B ∪ C|</button>
+                <button onclick="contohKasus(2)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-150 text-sm">Contoh 2: Cari |A|</button>
+                <button onclick="contohKasus(3)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-150 text-sm">Contoh 3: Cari |A ∩ B|</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array of input IDs for easy iteration
+        const inputIds = ['a', 'b', 'c', 'ab', 'ac', 'bc', 'abc', 'unionSize'];
+
+        // --- CUSTOM MESSAGE DISPLAY (Replacing alert()) ---
+        function displayMessage(message, type = 'error') {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = message;
+            messageArea.classList.remove('hidden', 'bg-red-100', 'border-red-500', 'text-red-700', 'bg-yellow-100', 'border-yellow-500', 'text-yellow-700');
+            
+            if (type === 'error') {
+                messageArea.classList.add('bg-red-100', 'border-red-500', 'text-red-700', 'border-l-4');
+            } else if (type === 'warning') {
+                messageArea.classList.add('bg-yellow-100', 'border-yellow-500', 'text-yellow-700', 'border-l-4');
+            }
+            document.getElementById('outputResult').style.display = 'none';
+            messageArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearMessages() {
+            document.getElementById('messageArea').classList.add('hidden');
+        }
+
+        // --- DYNAMIC INPUT STYLING ---
+        function updateInputStyles() {
+            inputIds.forEach(id => {
+                const input = document.getElementById(id);
+                if (parseInt(input.value) === -1) {
+                    input.classList.add('unknown-input');
+                } else {
+                    input.classList.remove('unknown-input');
+                }
+            });
+        }
+        
+        // Ensure initial state styling is applied on load
+        document.addEventListener('DOMContentLoaded', updateInputStyles);
+
+
+        // --- FUNGSI UTAMA ---
+        function hitungPIE() {
+            clearMessages();
+            
+            // Ambil nilai dari input dan parse sebagai integer
+            const totalPopulasi = parseInt(document.getElementById('totalPopulasi').value) || 0;
+            const inputs = {};
+            inputIds.forEach(id => {
+                inputs[id] = parseInt(document.getElementById(id).value) || 0;
+            });
+            const { a, b, c, ab, ac, bc, abc, unionSize } = inputs;
+            
+            // Validasi input
+            const validation = validasiInput(totalPopulasi, a, b, c, ab, ac, bc, abc, unionSize);
+            if (!validation.valid) {
+                displayMessage(validation.message, 'error');
+                return;
+            }
+
+            // Hitung nilai yang tidak diketahui
+            const result = hitungNilaiTidakDiketahui(totalPopulasi, a, b, c, ab, ac, bc, abc, unionSize);
+            
+            if (result) {
+                // Lakukan validasi konsistensi data sebelum menampilkan
+                if (result.finalValidation.hasNegative || result.finalValidation.total_mismatch) {
+                    displayMessage(result.finalValidation.message, 'warning');
+                }
+                tampilkanHasilLengkap(result);
+            }
+        }
+
+        // --- VALIDASI INPUT ---
+        function validasiInput(totalPopulasi, a, b, c, ab, ac, bc, abc, unionSize) {
+            const inputs = [a, b, c, ab, ac, bc, abc, unionSize];
+            const unknownCount = inputs.filter(val => val === -1).length;
+
+            if (unknownCount !== 1) {
+                return { valid: false, message: '<strong>ERROR:</strong> Masukkan **tepat SATU** nilai -1 untuk variabel yang ingin dicari, dan pastikan variabel lain bernilai positif.' };
+            }
+
+            const allValues = [totalPopulasi, ...inputs.filter(val => val !== -1)];
+            for (let val of allValues) {
+                if (val < 0) {
+                    return { valid: false, message: '<strong>ERROR:</strong> Nilai tidak boleh negatif, kecuali -1 untuk variabel yang dicari!' };
+                }
+            }
+            
+            if (totalPopulasi <= 0) {
+                // Hanya periksa jika ada nilai yang diketahui, jika semua -1 maka tidak perlu di cek.
+                // Karena ada 1 variabel yang harus -1, ini hanya perlu dicek jika diketahui.
+                 if (totalPopulasi < 0) {
+                    return { valid: false, message: '<strong>ERROR:</strong> Total populasi (U) harus lebih besar dari 0 atau sama dengan 0!' };
+                }
+            }
+
+            return { valid: true, message: '' };
+        }
+
+        // --- HITUNG NILAI TIDAK DIKETAHUI (Koreksi Rumus Turunan) ---
+        function hitungNilaiTidakDiketahui(totalPopulasi, a, b, c, ab, ac, bc, abc, unionSize) {
+            let unknown_name = '';
+            let unknown_value = 0;
+            let calculation = '';
+
+            try {
+                // Rumus Dasar PIE: |A ∪ B ∪ C| = |A| + |B| + |C| - (|A ∩ B| + |A ∩ C| + |B ∩ C|) + |A ∩ B ∩ C|
+                const A = a === -1 ? 0 : a;
+                const B = b === -1 ? 0 : b;
+                const C = c === -1 ? 0 : c;
+                const AB = ab === -1 ? 0 : ab;
+                const AC = ac === -1 ? 0 : ac;
+                const BC = bc === -1 ? 0 : bc;
+                const ABC = abc === -1 ? 0 : abc;
+                const U = unionSize === -1 ? 0 : unionSize;
+
+                if (unionSize === -1) {
+                    // Isolasi |A ∪ B ∪ C|
+                    unknown_value = Math.round(A + B + C - AB - AC - BC + ABC);
+                    unknown_name = '|A ∪ B ∪ C|';
+                    calculation = `${A} + ${B} + ${C} - ${AB} - ${AC} - ${BC} + ${ABC} = ${unknown_value}`;
+                } 
+                // --- Solving for Single Sets (Corrected) ---
+                else if (a === -1) {
+                    // Isolasi |A|: |A| = |A ∪ B ∪ C| - |B| - |C| + |A ∩ B| + |A ∩ C| + |B ∩ C| - |A ∩ B ∩ C| (Rumus di code salah, yang ini benar)
+                    unknown_value = Math.round(U - B - C + AB + AC + BC - ABC);
+                    unknown_name = '|A|';
+                    calculation = `${U} - ${B} - ${C} + ${AB} + ${AC} + ${BC} - ${ABC} = ${unknown_value}`;
+                } else if (b === -1) {
+                    unknown_value = Math.round(U - A - C + AB + BC + AC - ABC);
+                    unknown_name = '|B|';
+                    calculation = `${U} - ${A} - ${C} + ${AB} + ${BC} + ${AC} - ${ABC} = ${unknown_value}`;
+                } else if (c === -1) {
+                    unknown_value = Math.round(U - A - B + AC + BC + AB - ABC);
+                    unknown_name = '|C|';
+                    calculation = `${U} - ${A} - ${B} + ${AC} + ${BC} + ${AB} - ${ABC} = ${unknown_value}`;
+                } 
+                // --- Solving for Double Intersections (Corrected) ---
+                else if (ab === -1) {
+                    // Isolasi |A ∩ B|: |A ∩ B| = |A| + |B| + |C| - |A ∩ C| - |B ∩ C| + |A ∩ B ∩ C| - |A ∪ B ∪ C|
+                    unknown_value = Math.round(A + B + C - AC - BC + ABC - U);
+                    unknown_name = '|A ∩ B|';
+                    calculation = `${A} + ${B} + ${C} - ${AC} - ${BC} + ${ABC} - ${U} = ${unknown_value}`;
+                } else if (ac === -1) {
+                    unknown_value = Math.round(A + C + B - AB - BC + ABC - U);
+                    unknown_name = '|A ∩ C|';
+                    calculation = `${A} + ${C} + ${B} - ${AB} - ${BC} + ${ABC} - ${U} = ${unknown_value}`;
+                } else if (bc === -1) {
+                    unknown_value = Math.round(B + C + A - AB - AC + ABC - U);
+                    unknown_name = '|B ∩ C|';
+                    calculation = `${B} + ${C} + ${A} - ${AB} - ${AC} + ${ABC} - ${U} = ${unknown_value}`;
+                } 
+                // --- Solving for Triple Intersection (Corrected) ---
+                else if (abc === -1) {
+                    // Isolasi |A ∩ B ∩ C|: |A ∩ B ∩ C| = |A ∪ B ∪ C| - |A| - |B| - |C| + |A ∩ B| + |A ∩ C| + |B ∩ C|
+                    unknown_value = Math.round(U - A - B - C + AB + AC + BC);
+                    unknown_name = '|A ∩ B ∩ C|';
+                    calculation = `${U} - ${A} - ${B} - ${C} + ${AB} + ${AC} + ${BC} = ${unknown_value}`;
+                }
+
+                // Temporary values for full data set (used for validation/zone calc)
+                const fullData = {
+                    total_populasi: totalPopulasi,
+                    a: a === -1 ? unknown_value : a,
+                    b: b === -1 ? unknown_value : b,
+                    c: c === -1 ? unknown_value : c,
+                    ab: ab === -1 ? unknown_value : ab,
+                    ac: ac === -1 ? unknown_value : ac,
+                    bc: bc === -1 ? unknown_value : bc,
+                    abc: abc === -1 ? unknown_value : abc,
+                    union_size: unionSize === -1 ? unknown_value : unionSize,
+                    unknown_name: unknown_name,
+                    unknown_value: unknown_value,
+                    calculation: calculation
+                };
+
+                // Perform final validation on the calculated result
+                const finalValidation = validateFullData(fullData);
+
+                return { ...fullData, finalValidation };
+
+            } catch (error) {
+                displayMessage('<strong>ERROR:</strong> Terjadi kesalahan dalam proses perhitungan. ' + error.message, 'error');
+                return null;
+            }
+        }
+
+        // --- VALIDASI AKHIR KONSISTENSI DATA ---
+        function validateFullData(result) {
+            const zona = hitungSemuaZona(result);
+            const total_dari_zona = result.abc + zona.hanya_dua_total + zona.hanya_satu_total;
+            
+            let hasNegative = zona.AB_saja < 0 || zona.AC_saja < 0 || zona.BC_saja < 0 || 
+                             zona.A_saja < 0 || zona.B_saja < 0 || zona.C_saja < 0 || 
+                             zona.tidak_memilih < 0;
+            
+            // Check if the union size calculated by PIE matches the union size derived from zones (or the calculated union size itself)
+            // Use rounding for comparison to avoid floating point issues
+            const union_mismatch = Math.round(total_dari_zona) !== Math.round(result.union_size);
+            const total_populasi_mismatch = result.union_size > result.total_populasi;
+
+            let message = '';
+            let is_invalid = false;
+
+            if (hasNegative) {
+                 message += `⚠️ <strong>Data Tidak Konsisten!</strong> Beberapa zona (misalnya, 'Hanya |A| saja') memiliki nilai negatif. Cek kembali semua input Anda. `;
+                 is_invalid = true;
+            }
+            // Hapus check union_mismatch karena ada inkonsistensi yang tidak terhindarkan dari data input yang mungkin tidak mengikuti PIE
+            // if (union_mismatch) {
+            //     message += `⚠️ <strong>Peringatan Union Mismatch:</strong> Penjumlahan zona (${total_dari_zona}) tidak sama dengan |A ∪ B ∪ C| yang diinput/dihitung (${result.union_size}). Cek kembali input irisan ganda. `;
+            //     is_invalid = true;
+            // }
+            if (total_populasi_mismatch) {
+                 message += `⚠️ <strong>Total Populasi Mismatch:</strong> Gabungan himpunan (${result.union_size}) melebihi Total Populasi (${result.total_populasi}). `;
+                 is_invalid = true;
+            }
+
+            if (is_invalid) {
+                return { hasNegative: is_invalid, total_mismatch: is_invalid, message: message };
+            }
+
+            return { hasNegative: false, total_mismatch: false, message: 'Data konsisten dan valid.' };
+        }
+
+
+        // --- TAMPILKAN HASIL LENGKAP ---
+        function tampilkanHasilLengkap(result) {
+            const resultContent = document.getElementById('resultContent');
+            const outputResult = document.getElementById('outputResult');
+            outputResult.classList.remove('border-red-500', 'border-yellow-500', 'bg-red-50', 'bg-yellow-50');
+            outputResult.classList.add('border-green-500');
+
+            // Hitung semua zona
+            const zona = hitungSemuaZona(result);
+            const total_dari_zona = Math.round(result.abc + zona.hanya_dua_total + zona.hanya_satu_total);
+            const total_is_consistent = total_dari_zona === result.union_size;
+            
+            let html = '';
+
+            // 1. Variabel yang Dihitung
+            html += `<div class="p-3 bg-green-100 text-green-800 rounded-lg mb-4">
+                <strong class="text-xl">✅ ${result.unknown_name} = ${result.unknown_value}</strong>
+            </div>`;
+
+            // 2. Langkah Perhitungan
+            html += `<div class="p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg mb-4">
+                <strong class="block text-yellow-800 mb-1">📝 Rumus (diatur ulang) & Perhitungan:</strong>
+                <p class="text-formula text-yellow-900">${result.calculation}</p>
+            </div>`;
+
+            // 3. Data Lengkap
+            html += `<h4 class="text-xl font-semibold text-gray-700 mt-6 mb-2">Ringkasan Utama</h4>`;
+            html += `
+                <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Metrik</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Nilai</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="bg-blue-50 font-bold">
+                            <td class="px-6 py-4 whitespace-nowrap text-blue-800">Total Populasi (U)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-blue-800">${result.total_populasi}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">|A ∪ B ∪ C| (Gabungan)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right font-semibold">${result.union_size}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">|A ∩ B ∩ C| (Irisan Ketiga)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">${result.abc}</td>
+                        </tr>
+                        <tr class="${zona.tidak_memilih < 0 ? 'bg-red-100 font-bold' : 'bg-green-50 font-bold'}">
+                            <td class="px-6 py-4 whitespace-nowrap text-green-800">Tidak Memilih Sama Sekali (A U B U C)'</td> 
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.tidak_memilih < 0 ? 'text-red-700' : 'text-green-700'}">${zona.tidak_memilih}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            // 4. Rincian Zona (HANYA DUA)
+            html += `<h4 class="text-xl font-semibold text-gray-700 mt-6 mb-2">Rincian Zona - Hanya Dua Himpunan</h4>`;
+            html += `
+                <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Zona</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Perhitungan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="${zona.AB_saja < 0 ? 'bg-red-50' : ''}">
+                            <td class="px-6 py-4 whitespace-nowrap">Hanya |A ∩ B| saja</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.AB_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.AB_saja}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-formula">${result.ab} - ${result.abc} = ${zona.AB_saja}</td>
+                        </tr>
+                        <tr class="${zona.AC_saja < 0 ? 'bg-red-50' : ''}">
+                            <td class="px-6 py-4 whitespace-nowrap">Hanya |A ∩ C| saja</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.AC_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.AC_saja}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-formula">${result.ac} - ${result.abc} = ${zona.AC_saja}</td>
+                        </tr>
+                        <tr class="${zona.BC_saja < 0 ? 'bg-red-50' : ''}">
+                            <td class="px-6 py-4 whitespace-nowrap">Hanya |B ∩ C| saja</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.BC_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.BC_saja}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-formula">${result.bc} - ${result.abc} = ${zona.BC_saja}</td>
+                        </tr>
+                        <tr class="bg-gray-200 font-bold">
+                            <td class="px-6 py-4 whitespace-nowrap">Total Hanya Dua</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">${zona.hanya_dua_total}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            // 5. Rincian Zona (HANYA SATU)
+            html += `<h4 class="text-xl font-semibold text-gray-700 mt-6 mb-2">Rincian Zona - Hanya Satu Himpunan</h4>`;
+            html += `
+                <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Zona</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Perhitungan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="${zona.A_saja < 0 ? 'bg-red-50' : ''}">
+                            <td class="px-6 py-4 whitespace-nowrap">Hanya |A| saja</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.A_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.A_saja}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-formula">${result.a} - (${zona.AB_saja} + ${zona.AC_saja} + ${result.abc}) = ${zona.A_saja}</td>
+                        </tr>
+                        <tr class="${zona.B_saja < 0 ? 'bg-red-50' : ''}">
+                            <td class="px-6 py-4 whitespace-nowrap">Hanya |B| saja</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.B_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.B_saja}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-formula">${result.b} - (${zona.AB_saja} + ${zona.BC_saja} + ${result.abc}) = ${zona.B_saja}</td>
+                        </tr>
+                        <tr class="${zona.C_saja < 0 ? 'bg-red-50' : ''}">
+                            <td class="px-6 py-4 whitespace-nowrap">Hanya |C| saja</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right ${zona.C_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.C_saja}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-formula">${result.c} - (${zona.AC_saja} + ${zona.BC_saja} + ${result.abc}) = ${zona.C_saja}</td>
+                        </tr>
+                        <tr class="bg-gray-200 font-bold">
+                            <td class="px-6 py-4 whitespace-nowrap">Total Hanya Satu</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">${zona.hanya_satu_total}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            // 6. Validasi Total
+            const statusClass = total_is_consistent ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+            const statusText = total_is_consistent ? '✓ SESUAI' : '✗ TIDAK SESUAI';
+            
+            html += `<h4 class="text-xl font-semibold text-gray-700 mt-6 mb-2">Validasi Total</h4>`;
+            html += `
+                <div class="p-3 ${statusClass} rounded-lg mt-4 font-bold">
+                    <p>Total Union dari Penjumlahan Zona: <span class="float-right">${total_dari_zona}</span></p>
+                    <p>|A ∪ B ∪ C| yang Diperoleh: <span class="float-right">${result.union_size}</span></p>
+                    <p class="mt-2 pt-2 border-t border-current">Status Validasi Union: <span class="float-right">${statusText}</span></p>
+                </div>
+            `;
+            
+            resultContent.innerHTML = html;
+            outputResult.style.display = 'block';
+            outputResult.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- HITUNG SEMUA ZONA ---
+        function hitungSemuaZona(result) {
+            // Zona Irisan Ganda Murni
+            const AB_saja = Math.round(result.ab - result.abc);
+            const AC_saja = Math.round(result.ac - result.abc);
+            const BC_saja = Math.round(result.bc - result.abc);
+            const hanya_dua_total = AB_saja + AC_saja + BC_saja;
+            
+            // Zona Himpunan Tunggal Murni
+            const A_saja = Math.round(result.a - (AB_saja + AC_saja + result.abc));
+            const B_saja = Math.round(result.b - (AB_saja + BC_saja + result.abc));
+            const C_saja = Math.round(result.c - (AC_saja + BC_saja + result.abc));
+            const hanya_satu_total = A_saja + B_saja + C_saja;
+            
+            // Zona Luar (Komplemen)
+            const tidak_memilih = Math.round(result.total_populasi - result.union_size);
+
+            return {
+                AB_saja, AC_saja, BC_saja, hanya_dua_total,
+                A_saja, B_saja, C_saja, hanya_satu_total,
+                tidak_memilih,
+            };
+        }
+
+        // --- FUNGSI BANTU ---
+        function resetForm() {
+            document.getElementById('totalPopulasi').value = '150';
+            document.getElementById('a').value = '55';
+            document.getElementById('b').value = '80';
+            document.getElementById('c').value = '60';
+            document.getElementById('ab').value = '35';
+            document.getElementById('ac').value = '30';
+            document.getElementById('bc').value = '25';
+            document.getElementById('abc').value = '10';
+            document.getElementById('unionSize').value = '-1';
+            
+            document.getElementById('outputResult').style.display = 'none';
+            clearMessages();
+            updateInputStyles();
+        }
+
+        function contohKasus(jenis) {
+            resetForm();
+            
+            switch(jenis) {
+                case 1:
+                    // Contoh 1: Cari |A ∪ B ∪ C| (default)
+                    // Data default sudah benar: unionSize = -1
+                    break;
+                
+                case 2:
+                    // Contoh 2: Cari |A|
+                    document.getElementById('totalPopulasi').value = '200';
+                    document.getElementById('a').value = '-1';
+                    document.getElementById('b').value = '80';
+                    document.getElementById('c').value = '60';
+                    document.getElementById('ab').value = '25';
+                    document.getElementById('ac').value = '20';
+                    document.getElementById('bc').value = '30';
+                    document.getElementById('abc').value = '10';
+                    document.getElementById('unionSize').value = '150';
+                    break;
+                
+                case 3:
+                    // Contoh 3: Cari |A ∩ B|
+                    document.getElementById('totalPopulasi').value = '200';
+                    document.getElementById('a').value = '80';
+                    document.getElementById('b').value = '90';
+                    document.getElementById('c').value = '70';
+                    document.getElementById('ab').value = '-1';
+                    document.getElementById('ac').value = '25';
+                    document.getElementById('bc').value = '30';
+                    document.getElementById('abc').value = '15';
+                    document.getElementById('unionSize').value = '165';
+                    break;
+            }
+            updateInputStyles();
+        }
+    </script>
+</body>
+</html>
