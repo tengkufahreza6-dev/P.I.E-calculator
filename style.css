@@ -1,0 +1,135 @@
+/* Custom Styles for aesthetics */
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f0f4f8;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: #1a202c;
+    color: #e2e8f0;
+}
+
+body.dark-mode .card {
+    background: #2d3748;
+    color: #e2e8f0;
+}
+
+body.dark-mode .input-style {
+    background: #4a5568;
+    color: #e2e8f0;
+    border-color: #718096;
+}
+
+body.dark-mode .unknown-input {
+    background-color: #744210 !important;
+    border-color: #d69e2e !important;
+}
+
+body.dark-mode table {
+    color: #e2e8f0;
+}
+
+body.dark-mode .bg-white {
+    background-color: #2d3748 !important;
+}
+
+body.dark-mode .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-gray-500 {
+    color: #a0aec0 !important;
+}
+
+.card {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.input-style {
+    transition: all 0.2s;
+    border-radius: 0.5rem;
+}
+
+.unknown-input {
+    background-color: #fffbeb !important;
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
+}
+
+.text-formula {
+    font-family: monospace;
+    word-break: break-all;
+}
+
+/* Loading animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* History scrollbar */
+#historyContent::-webkit-scrollbar {
+    width: 6px;
+}
+
+#historyContent::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#historyContent::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+#historyContent::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Venn Diagram Styles */
+.venn-diagram {
+    transition: all 0.3s;
+}
+
+/* Mode selector styles */
+#mode2Set, #mode3Set {
+    transition: all 0.3s;
+}
+
+#mode2Set:hover, #mode3Set:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+    
+    .grid-cols-1 sm\:grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Print styles */
+@media print {
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    button {
+        display: none;
+    }
+}
