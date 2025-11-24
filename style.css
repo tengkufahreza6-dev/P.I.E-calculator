@@ -43,6 +43,194 @@ body.dark-mode .text-gray-500 {
     color: #a0aec0 !important;
 }
 
+/* PERBAIKAN: Background colors di dark mode DENGAN TEKS YANG TERBACA */
+body.dark-mode .bg-gray-200 {
+    background-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-gray-100 {
+    background-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-blue-50 {
+    background-color: #1e3a5f !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-blue-100 {
+    background-color: #2d4a7c !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-green-50 {
+    background-color: #22543d !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-green-100 {
+    background-color: #2d6a4f !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-yellow-50 {
+    background-color: #744210 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-yellow-100 {
+    background-color: #8b5a1a !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-red-50 {
+    background-color: #742a2a !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-red-100 {
+    background-color: #8b3232 !important;
+    color: #e2e8f0 !important;
+}
+
+/* PERBAIKAN KHUSUS: Untuk bagian hasil perhitungan yang tidak terlihat */
+body.dark-mode .bg-green-100.text-green-800,
+body.dark-mode .bg-green-100 .text-green-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .bg-yellow-50.text-yellow-800,
+body.dark-mode .bg-yellow-50 .text-yellow-800,
+body.dark-mode .bg-yellow-50 .text-yellow-900 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-formula {
+    color: #e2e8f0 !important;
+}
+
+/* PERBAIKAN: Warna teks spesifik untuk hasil */
+body.dark-mode .text-green-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-yellow-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-yellow-900 {
+    color: #e2e8f0 !important;
+}
+
+/* PERBAIKAN: Tombol mode himpunan di dark mode */
+body.dark-mode #mode2Set {
+    background-color: #2d4a7c !important;
+    border-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode #mode2Set .text-blue-800,
+body.dark-mode #mode2Set .text-blue-600 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode #mode3Set {
+    background-color: #22543d !important;
+    border-color: #10b981 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode #mode3Set .text-green-800,
+body.dark-mode #mode3Set .text-green-600 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode #mode2Set:hover {
+    background-color: #3b82f6 !important;
+}
+
+body.dark-mode #mode3Set:hover {
+    background-color: #10b981 !important;
+}
+
+/* PERBAIKAN: Text colors untuk elemen penting */
+body.dark-mode .text-blue-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-green-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-yellow-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-red-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-blue-600 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-green-600 {
+    color: #e2e8f0 !important;
+}
+
+/* PERBAIKAN: Untuk badge mode */
+body.dark-mode #currentModeBadge {
+    background-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+}
+
+/* PERBAIKAN: Untuk tombol aksi */
+body.dark-mode .bg-blue-600 {
+    background-color: #3b82f6 !important;
+}
+
+body.dark-mode .bg-gray-500 {
+    background-color: #6b7280 !important;
+}
+
+body.dark-mode .bg-green-500 {
+    background-color: #10b981 !important;
+}
+
+body.dark-mode .bg-indigo-500 {
+    background-color: #6366f1 !important;
+}
+
+body.dark-mode .bg-indigo-600 {
+    background-color: #4f46e5 !important;
+}
+
+body.dark-mode .bg-red-500 {
+    background-color: #ef4444 !important;
+}
+
+/* PERBAIKAN: Pastikan teks di header tabel terbaca */
+body.dark-mode thead th {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode tbody td {
+    color: #e2e8f0 !important;
+}
+
+/* PERBAIKAN TAMBAHAN: Untuk semua teks di dalam card hasil */
+body.dark-mode .result-box,
+body.dark-mode .result-box * {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .result-box .bg-green-100,
+body.dark-mode .result-box .bg-yellow-50,
+body.dark-mode .result-box .bg-blue-50 {
+    color: #e2e8f0 !important;
+}
+
 .card {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: all 0.3s;
