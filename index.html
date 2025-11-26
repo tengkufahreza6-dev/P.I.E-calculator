@@ -57,6 +57,29 @@
                 </ul>
             </div>
 
+            <!-- Custom Himpunan Names -->
+            <div class="p-4 mb-4 bg-purple-50 border-l-4 border-purple-500 rounded-lg">
+                <p class="font-semibold text-purple-800">🎨 Custom Nama Himpunan (Opsional)</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
+                    <div>
+                        <label for="customNameA" class="block text-sm font-medium text-purple-700">Nama Himpunan A:</label>
+                        <input type="text" id="customNameA" placeholder="A" maxlength="20" 
+                               class="input-style mt-1 block w-full px-3 py-2 border border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label for="customNameB" class="block text-sm font-medium text-purple-700">Nama Himpunan B:</label>
+                        <input type="text" id="customNameB" placeholder="B" maxlength="20"
+                               class="input-style mt-1 block w-full px-3 py-2 border border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    <div id="customNameCContainer">
+                        <label for="customNameC" class="block text-sm font-medium text-purple-700">Nama Himpunan C:</label>
+                        <input type="text" id="customNameC" placeholder="C" maxlength="20"
+                               class="input-style mt-1 block w-full px-3 py-2 border border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                </div>
+                <p class="text-xs text-purple-600 mt-2">Kosongkan untuk menggunakan nama default (A, B, C)</p>
+            </div>
+
             <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Data Input</h3>
             
             <div class="mb-4">
@@ -140,9 +163,9 @@
                     <circle cx="270" cy="120" r="80" fill="rgba(54, 162, 235, 0.3)" stroke="#3b82f6" stroke-width="2"/> 
                     <circle cx="200" cy="200" r="80" fill="rgba(255, 206, 86, 0.3)" stroke="#f59e0b" stroke-width="2"/> 
                     
-                    <text x="130" y="45" font-size="18" font-weight="bold" fill="#ef4444">A</text>
-                    <text x="270" y="45" font-size="18" font-weight="bold" fill="#3b82f6">B</text>
-                    <text x="200" y="280" font-size="18" font-weight="bold" fill="#f59e0b">C</text>
+                    <text id="venn-label-A" x="130" y="45" font-size="18" font-weight="bold" fill="#ef4444">A</text>
+                    <text id="venn-label-B" x="270" y="45" font-size="18" font-weight="bold" fill="#3b82f6">B</text>
+                    <text id="venn-label-C" x="200" y="280" font-size="18" font-weight="bold" fill="#f59e0b">C</text>
 
                     <text id="zone-A-saja" x="90" y="100" font-size="14" fill="#1f2937" font-weight="bold" text-anchor="middle">0</text>
                     <text id="zone-B-saja" x="310" y="100" font-size="14" fill="#1f2937" font-weight="bold" text-anchor="middle">0</text>
@@ -164,8 +187,8 @@
                     <circle cx="150" cy="150" r="80" fill="rgba(255, 99, 132, 0.3)" stroke="#ef4444" stroke-width="2"/> 
                     <circle cx="250" cy="150" r="80" fill="rgba(54, 162, 235, 0.3)" stroke="#3b82f6" stroke-width="2"/> 
                     
-                    <text x="150" y="80" font-size="18" font-weight="bold" fill="#ef4444">A</text>
-                    <text x="250" y="80" font-size="18" font-weight="bold" fill="#3b82f6">B</text>
+                    <text id="venn2-label-A" x="150" y="80" font-size="18" font-weight="bold" fill="#ef4444">A</text>
+                    <text id="venn2-label-B" x="250" y="80" font-size="18" font-weight="bold" fill="#3b82f6">B</text>
 
                     <text id="zone2-A-saja" x="100" y="150" font-size="14" fill="#1f2937" font-weight="bold" text-anchor="middle">0</text>
                     <text id="zone2-B-saja" x="300" y="150" font-size="14" fill="#1f2937" font-weight="bold" text-anchor="middle">0</text>

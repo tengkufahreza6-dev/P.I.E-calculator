@@ -231,6 +231,24 @@ body.dark-mode .result-box .bg-blue-50 {
     color: #e2e8f0 !important;
 }
 
+/* CUSTOM NAMES STYLES */
+body.dark-mode .bg-purple-50 {
+    background-color: #3c366b !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-purple-800 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-purple-700 {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .text-purple-600 {
+    color: #a0aec0 !important;
+}
+
 .card {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: all 0.3s;

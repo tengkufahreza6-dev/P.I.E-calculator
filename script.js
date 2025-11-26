@@ -3,14 +3,106 @@ const inputIds = ['a', 'b', 'c', 'ab', 'ac', 'bc', 'abc', 'unionSize'];
 let currentMode = 3; // 2 or 3 sets
 let calculationHistory = JSON.parse(localStorage.getItem('pieCalculationHistory')) || [];
 
+// Custom nama himpunan
+let customNames = {
+    a: 'A',
+    b: 'B', 
+    c: 'C'
+};
+
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', function() {
     updateInputStyles();
     loadTheme();
+    loadCustomNames();
     loadHistory();
     updateExportButton();
-    setMode(3); // Default to 3 sets
+    setMode(3);
+    
+    // Event listener untuk custom names
+    document.getElementById('customNameA').addEventListener('input', updateCustomNames);
+    document.getElementById('customNameB').addEventListener('input', updateCustomNames);
+    document.getElementById('customNameC').addEventListener('input', updateCustomNames);
 });
+
+// --- CUSTOM NAMES MANAGEMENT ---
+function updateCustomNames() {
+    customNames.a = document.getElementById('customNameA').value.trim() || 'A';
+    customNames.b = document.getElementById('customNameB').value.trim() || 'B';
+    customNames.c = document.getElementById('customNameC').value.trim() || 'C';
+    
+    // Simpan ke localStorage
+    localStorage.setItem('pieCustomNames', JSON.stringify(customNames));
+    
+    // Update labels
+    updateLabels();
+    updateZoneCaptions(); // PERBAIKAN: Update caption zona juga
+}
+
+function loadCustomNames() {
+    const savedNames = JSON.parse(localStorage.getItem('pieCustomNames'));
+    if (savedNames) {
+        customNames = savedNames;
+        document.getElementById('customNameA').value = customNames.a !== 'A' ? customNames.a : '';
+        document.getElementById('customNameB').value = customNames.b !== 'B' ? customNames.b : '';
+        document.getElementById('customNameC').value = customNames.c !== 'C' ? customNames.c : '';
+    }
+}
+
+function getSetName(set) {
+    return customNames[set] || set.toUpperCase();
+}
+
+function updateLabels() {
+    // Update input labels
+    document.querySelector('label[for="a"]').textContent = `|${getSetName('a')}|:`;
+    document.querySelector('label[for="b"]').textContent = `|${getSetName('b')}|:`;
+    document.querySelector('label[for="c"]').textContent = `|${getSetName('c')}|:`;
+    document.querySelector('label[for="ab"]').textContent = `|${getSetName('a')} ∩ ${getSetName('b')}|:`;
+    document.querySelector('label[for="ac"]').textContent = `|${getSetName('a')} ∩ ${getSetName('c')}|:`;
+    document.querySelector('label[for="bc"]').textContent = `|${getSetName('b')} ∩ ${getSetName('c')}|:`;
+    document.querySelector('label[for="abc"]').textContent = `|${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}|:`;
+    
+    if (currentMode === 2) {
+        document.querySelector('label[for="unionSize"]').textContent = `|${getSetName('a')} ∪ ${getSetName('b')}|:`;
+    } else {
+        document.querySelector('label[for="unionSize"]').textContent = `|${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}|:`;
+    }
+    
+    // Update Venn diagram labels
+    document.getElementById('venn-label-A').textContent = getSetName('a');
+    document.getElementById('venn-label-B').textContent = getSetName('b');
+    document.getElementById('venn-label-C').textContent = getSetName('c');
+    document.getElementById('venn2-label-A').textContent = getSetName('a');
+    document.getElementById('venn2-label-B').textContent = getSetName('b');
+}
+
+// --- PERBAIKAN: UPDATE ZONE CAPTIONS ---
+function updateZoneCaptions() {
+    const setNameA = getSetName('a');
+    const setNameB = getSetName('b');
+    const setNameC = getSetName('c');
+    
+    // Update captions untuk 3 sets
+    const captions3Sets = document.querySelectorAll('#zoneCaption3Sets td');
+    if (captions3Sets.length >= 16) {
+        captions3Sets[0].textContent = `Hanya ${setNameA} saja`;
+        captions3Sets[2].textContent = `Hanya ${setNameA} ∩ ${setNameB} saja`;
+        captions3Sets[4].textContent = `Hanya ${setNameB} saja`;
+        captions3Sets[6].textContent = `Hanya ${setNameA} ∩ ${setNameC} saja`;
+        captions3Sets[8].textContent = `Hanya ${setNameC} saja`;
+        captions3Sets[10].textContent = `Hanya ${setNameB} ∩ ${setNameC} saja`;
+        captions3Sets[12].textContent = `${setNameA} ∩ ${setNameB} ∩ ${setNameC}`;
+    }
+    
+    // Update captions untuk 2 sets
+    const captions2Sets = document.querySelectorAll('#zoneCaption2Sets td');
+    if (captions2Sets.length >= 8) {
+        captions2Sets[0].textContent = `Hanya ${setNameA} saja`;
+        captions2Sets[2].textContent = `${setNameA} ∩ ${setNameB}`;
+        captions2Sets[4].textContent = `Hanya ${setNameB} saja`;
+    }
+}
 
 // --- MODE MANAGEMENT ---
 function setMode(mode) {
@@ -29,9 +121,11 @@ function setMode(mode) {
         document.getElementById('acContainer').classList.add('hidden');
         document.getElementById('bcContainer').classList.add('hidden');
         document.getElementById('abcContainer').classList.add('hidden');
+        document.getElementById('customNameCContainer').classList.add('hidden');
         
         // Update labels
-        document.querySelector('label[for="unionSize"]').textContent = '|A ∪ B|:';
+        updateLabels();
+        updateZoneCaptions(); // PERBAIKAN: Update caption zona
         document.getElementById('currentModeBadge').textContent = '2 Himpunan';
         
         // Update Venn diagrams
@@ -40,7 +134,7 @@ function setMode(mode) {
         document.getElementById('zoneCaption2Sets').classList.remove('hidden');
         document.getElementById('zoneCaption3Sets').classList.add('hidden');
         
-        // ✅ PERBAIKAN: Update judul section Irisan untuk mode 2 himpunan
+        // Update judul section Irisan untuk mode 2 himpunan
         const intersectionTitle = document.getElementById('intersectionSection');
         if (intersectionTitle) {
             intersectionTitle.textContent = 'Irisan dan Union';
@@ -55,9 +149,11 @@ function setMode(mode) {
         document.getElementById('acContainer').classList.remove('hidden');
         document.getElementById('bcContainer').classList.remove('hidden');
         document.getElementById('abcContainer').classList.remove('hidden');
+        document.getElementById('customNameCContainer').classList.remove('hidden');
         
         // Update labels
-        document.querySelector('label[for="unionSize"]').textContent = '|A ∪ B ∪ C|:';
+        updateLabels();
+        updateZoneCaptions(); // PERBAIKAN: Update caption zona
         document.getElementById('currentModeBadge').textContent = '3 Himpunan';
         
         // Update Venn diagrams
@@ -66,7 +162,7 @@ function setMode(mode) {
         document.getElementById('zoneCaption3Sets').classList.remove('hidden');
         document.getElementById('zoneCaption2Sets').classList.add('hidden');
         
-        // ✅ PERBAIKAN: Update judul section Irisan untuk mode 3 himpunan
+        // Update judul section Irisan untuk mode 3 himpunan
         const intersectionTitle = document.getElementById('intersectionSection');
         if (intersectionTitle) {
             intersectionTitle.textContent = 'Irisan Tiga dan Union';
@@ -136,6 +232,9 @@ function updateInputStyles() {
 // --- FUNGSI UTAMA ---
 function hitungPIE() {
     clearMessages();
+    
+    // Update custom names terlebih dahulu
+    updateCustomNames();
     
     // Ambil nilai dari input dan parse sebagai integer
     const totalPopulasi = parseInt(document.getElementById('totalPopulasi').value) || 0;
@@ -238,47 +337,47 @@ function hitungNilaiTidakDiketahui3Set(totalPopulasi, a, b, c, ab, ac, bc, abc, 
 
         if (unionSize === -1) {
             unknown_value = Math.round(A + B + C - AB - AC - BC + ABC);
-            unknown_name = '|A ∪ B ∪ C|';
+            unknown_name = `|${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}|`;
             calculation = `${A} + ${B} + ${C} - ${AB} - ${AC} - ${BC} + ${ABC} = ${unknown_value}`;
-            basic_formula = '|A ∪ B ∪ C| = |A| + |B| + |C| - |A ∩ B| - |A ∩ C| - |B ∩ C| + |A ∩ B ∩ C|';
+            basic_formula = `|${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}| = |${getSetName('a')}| + |${getSetName('b')}| + |${getSetName('c')}| - |${getSetName('a')} ∩ ${getSetName('b')}| - |${getSetName('a')} ∩ ${getSetName('c')}| - |${getSetName('b')} ∩ ${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}|`;
         } 
         else if (a === -1) {
             unknown_value = Math.round(U - B - C + AB + AC + BC - ABC);
-            unknown_name = '|A|';
+            unknown_name = `|${getSetName('a')}|`;
             calculation = `${U} - ${B} - ${C} + ${AB} + ${AC} + ${BC} - ${ABC} = ${unknown_value}`;
-            basic_formula = '|A| = |A ∪ B ∪ C| - |B| - |C| + |A ∩ B| + |A ∩ C| + |B ∩ C| - |A ∩ B ∩ C|';
+            basic_formula = `|${getSetName('a')}| = |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}| - |${getSetName('b')}| - |${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')}| + |${getSetName('a')} ∩ ${getSetName('c')}| + |${getSetName('b')} ∩ ${getSetName('c')}| - |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}|`;
         } else if (b === -1) {
             unknown_value = Math.round(U - A - C + AB + BC + AC - ABC);
-            unknown_name = '|B|';
+            unknown_name = `|${getSetName('b')}|`;
             calculation = `${U} - ${A} - ${C} + ${AB} + ${BC} + ${AC} - ${ABC} = ${unknown_value}`;
-            basic_formula = '|B| = |A ∪ B ∪ C| - |A| - |C| + |A ∩ B| + |B ∩ C| + |A ∩ C| - |A ∩ B ∩ C|';
+            basic_formula = `|${getSetName('b')}| = |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}| - |${getSetName('a')}| - |${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')}| + |${getSetName('b')} ∩ ${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('c')}| - |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}|`;
         } else if (c === -1) {
             unknown_value = Math.round(U - A - B + AC + BC + AB - ABC);
-            unknown_name = '|C|';
+            unknown_name = `|${getSetName('c')}|`;
             calculation = `${U} - ${A} - ${B} + ${AC} + ${BC} + ${AB} - ${ABC} = ${unknown_value}`;
-            basic_formula = '|C| = |A ∪ B ∪ C| - |A| - |B| + |A ∩ C| + |B ∩ C| + |A ∩ B| - |A ∩ B ∩ C|';
+            basic_formula = `|${getSetName('c')}| = |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}| - |${getSetName('a')}| - |${getSetName('b')}| + |${getSetName('a')} ∩ ${getSetName('c')}| + |${getSetName('b')} ∩ ${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')}| - |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}|`;
         } 
         else if (ab === -1) {
             unknown_value = Math.round(A + B + C - AC - BC + ABC - U);
-            unknown_name = '|A ∩ B|';
+            unknown_name = `|${getSetName('a')} ∩ ${getSetName('b')}|`;
             calculation = `${A} + ${B} + ${C} - ${AC} - ${BC} + ${ABC} - ${U} = ${unknown_value}`;
-            basic_formula = '|A ∩ B| = |A| + |B| + |C| - |A ∩ C| - |B ∩ C| + |A ∩ B ∩ C| - |A ∪ B ∪ C|';
+            basic_formula = `|${getSetName('a')} ∩ ${getSetName('b')}| = |${getSetName('a')}| + |${getSetName('b')}| + |${getSetName('c')}| - |${getSetName('a')} ∩ ${getSetName('c')}| - |${getSetName('b')} ∩ ${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}| - |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}|`;
         } else if (ac === -1) {
             unknown_value = Math.round(A + C + B - AB - BC + ABC - U);
-            unknown_name = '|A ∩ C|';
+            unknown_name = `|${getSetName('a')} ∩ ${getSetName('c')}|`;
             calculation = `${A} + ${C} + ${B} - ${AB} - ${BC} + ${ABC} - ${U} = ${unknown_value}`;
-            basic_formula = '|A ∩ C| = |A| + |C| + |B| - |A ∩ B| - |B ∩ C| + |A ∩ B ∩ C| - |A ∪ B ∪ C|';
+            basic_formula = `|${getSetName('a')} ∩ ${getSetName('c')}| = |${getSetName('a')}| + |${getSetName('c')}| + |${getSetName('b')}| - |${getSetName('a')} ∩ ${getSetName('b')}| - |${getSetName('b')} ∩ ${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}| - |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}|`;
         } else if (bc === -1) {
             unknown_value = Math.round(B + C + A - AB - AC + ABC - U);
-            unknown_name = '|B ∩ C|';
+            unknown_name = `|${getSetName('b')} ∩ ${getSetName('c')}|`;
             calculation = `${B} + ${C} + ${A} - ${AB} - ${AC} + ${ABC} - ${U} = ${unknown_value}`;
-            basic_formula = '|B ∩ C| = |B| + |C| + |A| - |A ∩ B| - |A ∩ C| + |A ∩ B ∩ C| - |A ∪ B ∪ C|';
+            basic_formula = `|${getSetName('b')} ∩ ${getSetName('c')}| = |${getSetName('b')}| + |${getSetName('c')}| + |${getSetName('a')}| - |${getSetName('a')} ∩ ${getSetName('b')}| - |${getSetName('a')} ∩ ${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}| - |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}|`;
         } 
         else if (abc === -1) {
             unknown_value = Math.round(U - A - B - C + AB + AC + BC);
-            unknown_name = '|A ∩ B ∩ C|';
+            unknown_name = `|${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}|`;
             calculation = `${U} - ${A} - ${B} - ${C} + ${AB} + ${AC} + ${BC} = ${unknown_value}`;
-            basic_formula = '|A ∩ B ∩ C| = |A ∪ B ∪ C| - |A| - |B| - |C| + |A ∩ B| + |A ∩ C| + |B ∩ C|';
+            basic_formula = `|${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}| = |${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}| - |${getSetName('a')}| - |${getSetName('b')}| - |${getSetName('c')}| + |${getSetName('a')} ∩ ${getSetName('b')}| + |${getSetName('a')} ∩ ${getSetName('c')}| + |${getSetName('b')} ∩ ${getSetName('c')}|`;
         }
 
         const fullData = {
@@ -323,26 +422,26 @@ function hitungNilaiTidakDiketahui2Set(totalPopulasi, a, b, ab, unionSize) {
 
         if (unionSize === -1) {
             unknown_value = Math.round(A + B - AB_val);
-            unknown_name = '|A ∪ B|';
+            unknown_name = `|${getSetName('a')} ∪ ${getSetName('b')}|`;
             calculation = `${A} + ${B} - ${AB_val} = ${unknown_value}`;
-            basic_formula = '|A ∪ B| = |A| + |B| - |A ∩ B|';
+            basic_formula = `|${getSetName('a')} ∪ ${getSetName('b')}| = |${getSetName('a')}| + |${getSetName('b')}| - |${getSetName('a')} ∩ ${getSetName('b')}|`;
         } 
         else if (a === -1) {
             unknown_value = Math.round(U - B + AB_val);
-            unknown_name = '|A|';
+            unknown_name = `|${getSetName('a')}|`;
             calculation = `${U} - ${B} + ${AB_val} = ${unknown_value}`;
-            basic_formula = '|A| = |A ∪ B| - |B| + |A ∩ B|';
+            basic_formula = `|${getSetName('a')}| = |${getSetName('a')} ∪ ${getSetName('b')}| - |${getSetName('b')}| + |${getSetName('a')} ∩ ${getSetName('b')}|`;
         } else if (b === -1) {
             unknown_value = Math.round(U - A + AB_val);
-            unknown_name = '|B|';
+            unknown_name = `|${getSetName('b')}|`;
             calculation = `${U} - ${A} + ${AB_val} = ${unknown_value}`;
-            basic_formula = '|B| = |A ∪ B| - |A| + |A ∩ B|';
+            basic_formula = `|${getSetName('b')}| = |${getSetName('a')} ∪ ${getSetName('b')}| - |${getSetName('a')}| + |${getSetName('a')} ∩ ${getSetName('b')}|`;
         } 
         else if (ab === -1) {
             unknown_value = Math.round(A + B - U);
-            unknown_name = '|A ∩ B|';
+            unknown_name = `|${getSetName('a')} ∩ ${getSetName('b')}|`;
             calculation = `${A} + ${B} - ${U} = ${unknown_value}`;
-            basic_formula = '|A ∩ B| = |A| + |B| - |A ∪ B|';
+            basic_formula = `|${getSetName('a')} ∩ ${getSetName('b')}| = |${getSetName('a')}| + |${getSetName('b')}| - |${getSetName('a')} ∪ ${getSetName('b')}|`;
         }
 
         const fullData = {
@@ -520,15 +619,15 @@ function generateResultHTML3Set(result, zona, total_dari_zona, total_is_consiste
                     <td class="px-6 py-4 whitespace-nowrap text-right text-blue-800">${result.total_populasi}</td>
                 </tr>
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">|A ∪ B ∪ C| (Gabungan)</td>
+                    <td class="px-6 py-4 whitespace-nowrap">|${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')}| (Gabungan)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right font-semibold">${result.union_size}</td>
                 </tr>
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">|A ∩ B ∩ C| (Irisan Ketiga)</td>
+                    <td class="px-6 py-4 whitespace-nowrap">|${getSetName('a')} ∩ ${getSetName('b')} ∩ ${getSetName('c')}| (Irisan Ketiga)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">${result.abc}</td>
                 </tr>
                 <tr class="${zona.tidak_memilih < 0 ? 'bg-red-100 font-bold' : 'bg-green-50 font-bold'}">
-                    <td class="px-6 py-4 whitespace-nowrap text-green-800">Tidak Memilih Sama Sekali (A U B U C)'</td> 
+                    <td class="px-6 py-4 whitespace-nowrap text-green-800">Tidak Memilih Sama Sekali (${getSetName('a')} ∪ ${getSetName('b')} ∪ ${getSetName('c')})'</td> 
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.tidak_memilih < 0 ? 'text-red-700' : 'text-green-700'}">${zona.tidak_memilih}</td>
                 </tr>
             </tbody>
@@ -545,17 +644,17 @@ function generateResultHTML3Set(result, zona, total_dari_zona, total_is_consiste
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 <tr class="${zona.AB_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |A ∩ B| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('a')} ∩ ${getSetName('b')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.AB_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.AB_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.ab} - ${result.abc} = ${zona.AB_saja}</td>
                 </tr>
                 <tr class="${zona.AC_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |A ∩ C| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('a')} ∩ ${getSetName('c')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.AC_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.AC_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.ac} - ${result.abc} = ${zona.AC_saja}</td>
                 </tr>
                 <tr class="${zona.BC_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |B ∩ C| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('b')} ∩ ${getSetName('c')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.BC_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.BC_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.bc} - ${result.abc} = ${zona.BC_saja}</td>
                 </tr>
@@ -578,17 +677,17 @@ function generateResultHTML3Set(result, zona, total_dari_zona, total_is_consiste
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 <tr class="${zona.A_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |A| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('a')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.A_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.A_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.a} - (${zona.AB_saja} + ${zona.AC_saja} + ${result.abc}) = ${zona.A_saja}</td>
                 </tr>
                 <tr class="${zona.B_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |B| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('b')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.B_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.B_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.b} - (${zona.AB_saja} + ${zona.BC_saja} + ${result.abc}) = ${zona.B_saja}</td>
                 </tr>
                 <tr class="${zona.C_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |C| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('c')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.C_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.C_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.c} - (${zona.AC_saja} + ${zona.BC_saja} + ${result.abc}) = ${zona.C_saja}</td>
                 </tr>
@@ -632,15 +731,15 @@ function generateResultHTML2Set(result, zona, total_dari_zona, total_is_consiste
                     <td class="px-6 py-4 whitespace-nowrap text-right text-blue-800">${result.total_populasi}</td>
                 </tr>
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">|A ∪ B| (Gabungan)</td>
+                    <td class="px-6 py-4 whitespace-nowrap">|${getSetName('a')} ∪ ${getSetName('b')}| (Gabungan)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right font-semibold">${result.union_size}</td>
                 </tr>
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">|A ∩ B| (Irisan)</td>
+                    <td class="px-6 py-4 whitespace-nowrap">|${getSetName('a')} ∩ ${getSetName('b')}| (Irisan)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">${result.ab}</td>
                 </tr>
                 <tr class="${zona.tidak_memilih < 0 ? 'bg-red-100 font-bold' : 'bg-green-50 font-bold'}">
-                    <td class="px-6 py-4 whitespace-nowrap text-green-800">Tidak Memilih Sama Sekali (A U B)'</td> 
+                    <td class="px-6 py-4 whitespace-nowrap text-green-800">Tidak Memilih Sama Sekali (${getSetName('a')} ∪ ${getSetName('b')})'</td> 
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.tidak_memilih < 0 ? 'text-red-700' : 'text-green-700'}">${zona.tidak_memilih}</td>
                 </tr>
             </tbody>
@@ -657,17 +756,17 @@ function generateResultHTML2Set(result, zona, total_dari_zona, total_is_consiste
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 <tr class="${zona.A_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |A| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('a')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.A_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.A_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.a} - ${result.ab} = ${zona.A_saja}</td>
                 </tr>
                 <tr class="${zona.B_saja < 0 ? 'bg-red-50' : ''}">
-                    <td class="px-6 py-4 whitespace-nowrap">Hanya |B| saja</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Hanya |${getSetName('b')}| saja</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right ${zona.B_saja < 0 ? 'text-red-700 font-bold' : ''}">${zona.B_saja}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">${result.b} - ${result.ab} = ${zona.B_saja}</td>
                 </tr>
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">|A ∩ B| (Irisan)</td>
+                    <td class="px-6 py-4 whitespace-nowrap">|${getSetName('a')} ∩ ${getSetName('b')}| (Irisan)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">${result.ab}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-formula">Langsung dari input</td>
                 </tr>
